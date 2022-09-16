@@ -1,0 +1,100 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+body {
+  font-family: monospace, SansSerif, Arial;
+}
+
+.flex {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  &.fwn {
+    flex-wrap: nowrap;
+  }
+  &.aic {
+    align-items: center;
+  }
+  &.jcc {
+    justify-content: center;
+  }
+  &.aife {
+    align-items: flex-end;
+  }
+  &.jcfs {
+    justify-content: flex-start;
+  }
+  &.jcfe {
+    justify-content: flex-end;
+  }
+  &.jcsb {
+    justify-content: space-between;
+  }
+  &.jcsa {
+    justify-content: space-around;
+  }
+  &.jcse {
+    justify-content: space-evenly;
+  }
+  &.fdc {
+    flex-direction: column;
+  }
+  &.g10 {
+    gap: 10px;
+  }
+  &.g5 {
+    gap: 5px;
+  }
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+}
+
+.block {
+  border-radius: 4px;
+  box-shadow: 1px 3px 6px -2px rgba(20, 20, 20, 0.5);
+  border: 2px groove rgba(20, 20, 20, 0.08);
+}
+
+.smallButton {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  border: none;
+  height: 22px;
+  cursor: pointer;
+  &.increment {
+    background: darkolivegreen;
+    color: white;
+  }
+  &.decrement {
+    background: indianred;
+    color: white;
+  }
+  &.confirm {
+    background-color: rgb(50, 50, 50);
+    color: white;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}

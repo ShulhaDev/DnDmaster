@@ -1,0 +1,57 @@
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-flow: column nowrap;
+  font-weight: bold;
+  background-color: silver;
+  border-radius: 4px;
+  padding: 10px;
+  width: 140px;
+  gap: 10px;
+  height: 200px;
+
+  & .basics {
+    position: absolute;
+    overflow: visible;
+    top: 5px;
+    left: -15px;
+  }
+  & img {
+    height: 80%;
+    width: auto;
+    max-width: 100px;
+    max-height: 150px;
+  }
+}
+
+.icon-placeholder {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 35px;
+  height: 20px;
+  border: 2px groove silver;
+  padding: 0 5px;
+}
+
+.options {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.action {
+  cursor: pointer;
+  padding: 4px;
+  background-color: grey;
+  box-shadow: 1px 1px 3px -1px black;
+  border-radius: 4px;
+  color: #fff;
+  fill: #fff;
+  width: 25px;
+  height: 25px;
+  border: none;
+}

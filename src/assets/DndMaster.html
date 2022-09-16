@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
+
+<style>
+ body{
+   font-family: Verdana,roboto,arial
+ }
+.container{
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position:relative;
+  padding: 2rem;
+  overflow-y: hidden;
+}
+.block{
+  border-radius: 4px;
+  box-sizing: border-box;
+  box-shadow: 1px 4px 10px -2px rgba(0,0,0,.3);
+}
+input[type="number"],input[type="text"]{
+  width: calc(100% - 30px);
+  border:none;
+  border-bottom: 1px dashed gold;
+  outline: none;
+  border-radius: 4px;
+  display: inline-block;
+  min-width: 80px;
+}
+
+textarea {
+  width: calc(100% - 30px);
+}
+
+.person{
+  background-color: rgb(255,255,220);
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 300px;
+  border: 2px groove rgba(20,20,20,0.08);
+}
+
+.person .closer{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width:20px;
+  height: 20px;
+  font-size: x-large;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+}
+
+.heroes{
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 0 20px;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.card{
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-flow: column nowrap;
+  font-weight: bold;
+  background-color: silver;
+  border-radius: 4px;
+  padding: 10px;
+  width: 140px;
+  gap: 10px;
+  height: 200px;  
+}
+
+.card .basics{
+  position: absolute;
+  overflow: visible;
+  top: 5px;
+  left: -15px;
+  
+}
+ 
+.card img{
+  height: 80%;
+  width: auto;
+  max-width: 100px;
+  max-height: 150px;
+}
+
+.options{
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  display: flex;
+  justify-content: flex-end;
+  gap:3px;
+}
+
+.small-text{
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+}
+
+.papers{
+  
+}
+
+.label {
+  display: inline-block;
+  font-weight: 700;
+  min-width: 100px;
+}
+
+.action{
+ cursor: pointer;
+ padding: 4px;
+ background-color: grey;
+ box-shadow: 1px 1px 3px -1px black;
+ border-radius: 4px;
+ color: #fff;
+ fill: #fff;
+ width: 25px;
+ height: 25px;
+ border: none;
+}
+
+.adder{
+  cursor: pointer;
+  font-weight: 700;
+  padding: 5px 10px;
+  background-color: rgba(20,20,20,.08);
+  margin-bottom: 10px;
+}
+.row{
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ width: 100%;
+}
+
+.column{
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 5px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.g5{
+  gap: 5px;
+}
+
+.icon{
+  width: 20px;
+}
+
+.icon-placeholder {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 35px;
+  height: 20px;
+  border: 2px groove silver;
+  padding: 0 5px;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+ <div class="row">
+   <label for="hero" class="adder block small-text" ><i class="fa fa-plus-circle fa-lg icon" style="margin-right: 10px"></i>Add hero</label>
+   <input id="hero" style="width:0" type='file' onchange="addHero(event)"/>
+ </div>
+ <div id="heroes" class="heroes">
+   
+ </div>
+ 
+ <div id = "papers" class ="papers">
+ </div> 
+</div>
+</body>
+<script>
+
+var activePersons = {};
+var dragged = null;
+let maxZ = 0;
+const heroes = [];
+window.onload =  function(){}
+
+const icons = {
+  shield: `<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 512 512"><path d="M466.5 83.7l-192-80a48.15 48.15 0 0 0-36.9 0l-192 80C27.7 91.1 16 108.6 16 128c0 198.5 114.5 335.7 221.5 380.3 11.8 4.9 25.1 4.9 36.9 0C360.1 472.6 496 349.3 496 128c0-19.4-11.7-36.9-29.5-44.3zM256.1 446.3l-.1-381 175.9 73.3c-3.3 151.4-82.1 261.1-175.8 307.7z"/></svg>`,
+  heart: `<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 512 512"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>`,
+  history: `<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 448 512" fill="#fff"><path d="M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z"/></svg>`,
+  description: `<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 384 512" fill="#fff"><path d="M336 0H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zM192 128c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H102.4C90 384 80 375.4 80 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2z"/></svg>`,
+  status: `<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 576 512" fill="#fff"><path d="M528 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h480c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-352 96c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H86.4C74 384 64 375.4 64 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2zM512 312c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16z"/></svg>`,
+}
+
+
+var togglePerson = function(element,name) {
+  var rect = element.getBoundingClientRect();
+  var top = rect.top;
+  var left = rect.left;
+
+
+  const id = name+'_'+element.id;
+  
+  const info = document.getElementById(id);
+  if(id in activePersons) {
+    delete activePersons[id];
+    info.style.top = '103vh';
+    info.style.left = 0;
+  }
+  else {
+    
+    activePersons[id] = {name,top,left};
+    info.style.top = top + 30 + 'px';
+    info.style.left = left + 30 + 'px';
+  }   
+}
+const capture = (event,target) => {
+  target.style['z-index'] = ++maxZ;
+  dragged = {target,targetLeft:target.style.left,targetTop: target.style.top, left: event.clientX, top: event.clientY};
+}
+const move = (e,target) => {
+  if(!dragged) return;
+  const {left,top,targetLeft,targetTop} = dragged;
+  const {clientX,clientY} = e;
+  const diffX = clientX - left;
+  const diffY = clientY - top;
+  requestAnimationFrame(() => {
+    target.style.left = `calc(${targetLeft} + ${diffX}px)`;
+    target.style.top = `calc(${targetTop} + ${diffY}px)`;
+  })
+
+}
+const drop = (target) => {
+  dragged=null;
+}
+
+const dismiss = (id) => {
+  const target = document.getElementById(id);
+  target.style.top = '103vh';
+}
+
+const addHero = 
+ (event) => {
+   const reader = new FileReader();
+   reader.onload = onReaderLoad;
+   reader.readAsText(event.target.files[0]);
+ }
+
+function onReaderLoad(event){
+  const hero = JSON.parse(event.target.result);
+  heroes.push(hero);
+  const heroesList = document.getElementById('heroes');
+  const papersList = document.getElementById('papers');
+  const {hero_class} = hero;
+  const name = hero_class.charAt(0).toUpperCase() + hero_class.slice(1);
+  const card = createHeroCard(hero);  
+  const history = createHeroPaper(hero,'history');
+  const description = createHeroPaper(hero,'description');
+  const status = createHeroPaper(hero,'status');
+  heroesList.appendChild(card);
+  papersList.appendChild(history);
+  papersList.appendChild(description);
+  papersList.appendChild(status);
+}
+
+const createHeroCard = (hero) => {
+  const {hero_class,hp,armour,history: {name:hero_name}} = hero;
+  const name = hero_class.charAt(0).toUpperCase() + hero_class.slice(1);
+  const card = document.createElement('div');
+  card.style.overflow='visible';
+  card.innerHTML = `<div style="text-align: center; color: #fff; text-shadow: 1px 1px 3px black">${name}</div>
+      <img src="./assets/Images/${hero_class}.png" alt="${hero_class}" style="filter: brightness(2.4)"/>
+	  <div class="basics column small-text">
+	     <span class="icon-placeholder row  g5">
+		   ${icons.heart}
+		   ${hp.split('|')[0]}</span>
+		 <span class="icon-placeholder row  g5">${icons.shield} ${armour}</span>
+	  </div>
+	  <div class="options column">
+	    <button id="history" title="About ${hero_name}" class="action small-text" onclick="togglePerson(this,'${hero_class}')">${icons.history}</button>
+	    <button id="description" title="Description" class="action small-text" onclick="togglePerson(this,'${hero_class}')">${icons.description}</button>
+	    <button id="status" title="Status" class="action small-text" onclick="togglePerson(this,'${hero_class}')">${icons.status}</button>
+	  </div>`
+	  card.classList.add('card', 'block');
+	  return card;
+}
+
+const createHeroPaper = (hero,type) => {
+  const paper = document.createElement('div');
+  const id = `${hero.hero_class}_${type}`;
+  paper.id = id;
+  paper.classList.add('person','block');
+  paper.onmousemove = (event) => move(event,paper);
+  paper.onmousedown = (event) => capture(event,paper);
+  paper.onmouseup = (event) => drop(paper);
+  paper.style.top = '103vh';
+  paper.style.position ='fixed';
+  paper.style.left = '0';
+  let content;
+  switch(type){
+   case 'history': content = createHeroHistory(hero); break;
+   case 'description': content = createHeroDescription(hero); break;
+   //case 'history': content = createHeroHistory(hero); break;
+   default: content = 'not set';
+  }
+  
+  paper.innerHTML = `${content}
+  <button class="closer" onclick="dismiss('${id}')">×</button>
+ `
+ return paper;
+}
+
+const createHeroHistory = (hero) => {
+  const {name,story,temper} = hero.history;
+  return `<div class="column" style="width: calc(100% - 10px)">
+	${labeledText('Name',name)}
+	${labeledText('Story',story,true)}
+	${labeledText('Temper',temper)}
+  </div>`
+}
+
+const labeledNumber = (title,min,max,value) => `<div class="row">
+<span class="label" >${title}:</span>
+<input type="number" max=${max} value=${value} min=${min} step=1/>
+</div>`
+
+const labeledText = (title,value,multiline=false) => `<div class="row">
+<span class="label" >${title}:</span>
+${multiline ? `<textarea>${value}</textarea>` : `<input type="text" value='${value}'/>`}
+</div>`
+
+const createHeroDescription = (hero) => {
+  const {hp,mp,armour,strength,agility,inteligence,wisdom,charisma,constitution,stances,stance} = hero;
+  const [cur_hp,max_hp] = hp.split('|');
+  const [cur_mp,max_mp] = mp.split('|');
+  return `<div class="column" style="width: calc(100% - 10px)">
+    ${labeledNumber('HP',0,max_hp,cur_hp)}
+	${labeledNumber('MP',0,max_mp,cur_mp)}
+	${labeledNumber('Armour',0,20,armour)}
+    ${labeledText('Stance',stance)}	
+  </div>`
+}
+
+</script>
+</html>
