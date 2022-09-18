@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/DnDMaster/static/css/main.85f91e8b.css",
-    "main.js": "/DnDMaster/static/js/main.ff6d4d77.js",
+    "main.js": "/DnDMaster/static/js/main.b49686f4.js",
     "index.html": "/DnDMaster/index.html",
     "main.85f91e8b.css.map": "/DnDMaster/static/css/main.85f91e8b.css.map",
-    "main.ff6d4d77.js.map": "/DnDMaster/static/js/main.ff6d4d77.js.map"
+    "main.b49686f4.js.map": "/DnDMaster/static/js/main.b49686f4.js.map"
   },
   "entrypoints": [
     "static/css/main.85f91e8b.css",
-    "static/js/main.ff6d4d77.js"
+    "static/js/main.b49686f4.js"
   ]
 }
